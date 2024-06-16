@@ -1,0 +1,32 @@
+{
+  "name": "chai-beckend",
+  "version": "1.0.0",
+  "description": "a simple chai aur beckend",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
+  },
+  "keywords": [
+    "node",
+    "js",
+    "chai"
+  ],
+  "author": "Shivendra Pratap Singh",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cloudinary": "^2.2.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.4.1",
+    "mongoose-aggregate-paginate-v2": "^1.0.7",
+    "multer": "^1.4.5-lts.1"
+  }
+}
