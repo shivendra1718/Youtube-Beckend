@@ -248,7 +248,11 @@ const registerUser = asyncHandler( async(req,res)=>{
                     return res.status(201).json(201,req.user, "current user fetch successfully")
 
                   })
-                   const updateAccountDetails = asyncHandler(async(req,res)=>{
+
+                  // accout update 
+
+                   const updateAccountDetails = asyncHandler(async(req,res)=>
+                  {
                     const {email, fullName} = req.body
                     if (!email||!fullName) {
                       throw new ApiError(401, "enter the user email or fullname")
@@ -262,10 +266,14 @@ const registerUser = asyncHandler( async(req,res)=>{
                         }
                       },
                       {new: true}
-                      )
-                   }).select("-password")
+                      ).select("-password")
 
-                   return res.status(201).json(new ApiResponse(201, user, "account updated "))
+                      return res.status(201).json(new ApiResponse(201, user, "account updated "))
+                   })
+
+                  
+
+                   // avatar image upload
 
                    const updateUserAvatar = asyncHandler(async(req,res)=>{
 
@@ -289,6 +297,7 @@ const registerUser = asyncHandler( async(req,res)=>{
                       return res.status(201).json(ApiResponse(201,user,"avatar  update successfully"))
 
                    })
+                   // cover image upload 
 
                    const updateUserCoverImage = asyncHandler(async(req,res)=>{
                      const coverImageLocalPath = req.file?.path
