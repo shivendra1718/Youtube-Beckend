@@ -229,6 +229,88 @@ const registerUser = asyncHandler( async(req,res)=>{
                       new ApiError(401, error?.message||"invalid refresh token")
                     }
                   })
+
+                  const changeCurrentPassword = asyncHandler(async(req,res)=>{
+                    const {oldPassword, newPassword} = req.body;
+                    const user = User.findById(req.user?._id)
+                     const isPasswordCorrect =  await isPasswordCorrect(oldPassword)
+                     if (!isPasswordCorrect) {
+                      throw new ApiError(401, "invalid paasword ")
+                      user.password = newPassword
+                      await user.save({validateBeforeSave:false})
+                      return res.status(201).json(new ApiResponse(201,{},"password change successfully"))
+
+                      
+                     }
+                  })
+
+                  const getCurrentUser = asyncHandler(async(req, res )=>{
+                    return res.status(201).json(201,req.user, "current user fetch successfully")
+
+                  })
+                   const updateAccountDetails = asyncHandler(async(req,res)=>{
+                    const {email, fullName} = req.body
+                    if (!email||!fullName) {
+                      throw new ApiError(401, "enter the user email or fullname")
+                    }
+                     const user = await User.findByIdAndUpdate(
+                      req.user?._id,
+                      {
+                        $set:{
+                          fullName:fullName,
+                          email:email
+                        }
+                      },
+                      {new: true}
+                      )
+                   }).select("-password")
+
+                   return res.status(201).json(new ApiResponse(201, user, "account updated "))
+
+                   const updateUserAvatar = asyncHandler(async(req,res)=>{
+
+                     const avatarLocalPath = req.files?.path
+
+                     if (!avatarLocalPath) {
+                       throw new ApiError(401,"file upload fail")
+                       
+                       
+                     }
+                     const avatar = await uploadOnCloudinary(avatarLocalPath)
+
+                     if (!avatar ) {
+                      throw new ApiError(401,"error while uploading the avatar")
+                    }
+
+                  const user =   await User.findByIdAndUpdate(req.user?._id, 
+                     { $set:{ avatar : avatar.url}},
+                      {new: true }
+                      ).select("-password")
+                      return res.status(201).json(ApiResponse(201,user,"avatar  update successfully"))
+
+                   })
+
+                   const updateUserCoverImage = asyncHandler(async(req,res)=>{
+                     const coverImageLocalPath = req.file?.path
+                     if (!coverImageLocalPath) {
+                      throw new ApiError(4001, " fail to upload cover image ")
+
+                     }
+                      const coverImage = await uploadOnCloudinary(coverImageLocalPath)
+
+                      if (!coverImage.url) {
+                        throw new ApiError(401, "unable to upload on cloudinary")
+                      }
+                       
+                     const user =   await user.findByIdAndUpdate(req.user?._id,
+                        {
+                          $set:{
+                            coverImage: coverImage.url
+                          }
+                        },
+                        {new:true})
+                         return res.status(201).json(ApiResponse(201,user,"cover image update successfully"))
+                   })
     
                  
 
@@ -236,4 +318,4 @@ const registerUser = asyncHandler( async(req,res)=>{
 
 
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken}
+export { registerUser, loginUser, logoutUser, refreshAccessToken, getCurrentUser, changeCurrentPassword, updateUserAvatar, updateUserCoverImage}
