@@ -4,7 +4,9 @@ import{ User} from "../models/User.model.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.fileupload.js"
 import {ApiResponse} from '../utils/ApiResponse.js'
 import jwt from 'jsonwebtoken'
-import mongoose, { Aggregate } from "mongoose";
+import mongoose from "mongoose";
+ const  { Aggregate } = mongoose;
+ 
 
 
 /// we  making a method for generating the refresh and access token so 
@@ -135,8 +137,8 @@ const registerUser = asyncHandler( async(req,res)=>{
                     // generate acess and refresh token 
                     // send the response in cookies
                     const {email,username,password} = req.body
-                    console.log("email: ",email)
-                    console.log("email: ",username)
+                    // console.log("email: ",email)
+                    // console.log("email: ",username)
                    
                     if (!(username ||email)) {
                         throw new ApiError(400,"enter username or email")
@@ -233,20 +235,28 @@ const registerUser = asyncHandler( async(req,res)=>{
 
                   const changeCurrentPassword = asyncHandler(async(req,res)=>{
                     const {oldPassword, newPassword} = req.body;
-                    const user = User.findById(req.user?._id)
-                     const isPasswordCorrect =  await isPasswordCorrect(oldPassword)
-                     if (!isPasswordCorrect) {
-                      throw new ApiError(401, "invalid paasword ")
+                    console.log("oldPassword:", oldPassword)
+
+                    console.log("new Password:", newPassword)
+                    const user = await  User.findById(req.user?._id)
+                    // console.log("user  :",user)
+                     const isPasswordMatched =  await user.isPasswordCorrect(oldPassword)
+                     console.log("isPasswordMatched:", isPasswordMatched)
+                     if (!isPasswordMatched) {
+                      throw new ApiError(401, "invalid paasword ")}
+
                       user.password = newPassword
-                      await user.save({validateBeforeSave:false})
+                       const saveP =await user.save({validateBeforeSave:false})
+                       console.log("saveP:",saveP)
                       return res.status(201).json(new ApiResponse(201,{},"password change successfully"))
 
                       
-                     }
+                     
                   })
 
                   const getCurrentUser = asyncHandler(async(req, res )=>{
-                    return res.status(201).json(201,req.user, "current user fetch successfully")
+                    
+                    return res.status(201).json( new ApiResponse(201,req.user, "current user fetch successfully"))
 
                   })
 
