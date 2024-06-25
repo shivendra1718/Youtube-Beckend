@@ -22,11 +22,13 @@ const videoSchema = new Schema({
             },
             duration:{
                 type:Number, /// cloudnary
-                required:true
+                required:false
+                
             },
             views:{
                 type:Number,
-                default:0
+                default:0,
+               
             },
             isPublished:{
                 type:Boolean,
